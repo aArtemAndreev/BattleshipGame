@@ -1,9 +1,10 @@
 #include <iostream>
-#include <vector>
+#include <array>
 #include <random>
 #include <QApplication>
 #include <QWidget>
 #include <QPainter>
+#include <optional>
 
 class Ship {
 private:
@@ -68,12 +69,20 @@ private:
         return true;
     }
 public:
-    constexpr Field() {
+    constexpr Field() noexcept {
         for (int i = 0; i < 12; ++i) {
             for (int j = 0; j < 12; ++j) {
                 field[i][j] = '0';
             }
         }
+    }
+    Field& operator=(const Field& other) {
+        for (int i = 0; i < 12; ++i) {
+            for (int j = 0; j < 12; ++j) {
+                field[i][j] = other.getCurrentPlace(i, j);
+            }
+        }
+        return *this;
     }
     constexpr void printField() {
         for (int i = 1; i < 11; ++i) {
@@ -85,7 +94,7 @@ public:
     }
     constexpr bool setShip(Ship ship) {
         if (!checkIfCouldBePut(ship)) {
-            std::cout << "no" << ship.getX() << ship.getY() << ' ' << ship.getSize() << '\n';
+            //std::cout << "no" << ship.getX() << ship.getY() << ' ' << ship.getSize() << '\n';
             return false;
         }
         const int shipX = ship.getX();
@@ -111,26 +120,33 @@ public:
 class StupidBot {
 public:
     ~StupidBot() = default;
-    void randomGenerator(Field& field) {
+    std::optional<Field> randomGenerator() {
+        Field field;
         std::random_device rd;
         std::mt19937 gen(rd());
         bool isSet = false;
         Ship ship{};
-        for (int currentShip = 0; currentShip < 4; ++currentShip) {
-            for (int i = 0; i < 1 + currentShip; ++i) {
-                isSet = false;
-                while (!isSet) {
-                    ship.setSize(4 - currentShip);
-                    std::uniform_int_distribution<> distX(1,7);
-                    std::uniform_int_distribution<> distY(1,7);
-                    std::uniform_int_distribution<> dist01(0,1);
-                    ship.setX(distX(gen) + currentShip);
-                    ship.setY(distY(gen) + currentShip);
-                    ship.setRotation(dist01(gen));
-                    isSet = field.setShip(ship);
+        std::array<int, 10> ships = {0, 1, 2, 3, 1, 2, 3, 2, 3, 3};
+        int countSettingAttempts = 0;
+        for (const int& currentShip : ships) {
+            isSet = false;
+            while (!isSet) {
+                ship.setSize(4 - currentShip);
+                std::uniform_int_distribution<> distX(1, 7);
+                std::uniform_int_distribution<> distY(1, 7);
+                std::uniform_int_distribution<> dist01(0, 1);
+                ship.setX(distX(gen) + currentShip);
+                ship.setY(distY(gen) + currentShip);
+                ship.setRotation(dist01(gen));
+                isSet = field.setShip(ship);
+                if (!isSet) ++countSettingAttempts;
+                if (countSettingAttempts > 100) {
+                    std::cout << "shit\n";
+                    return std::nullopt;
                 }
             }
         }
+        return field;
     }
 
 };
@@ -160,13 +176,14 @@ public:
 };
 
 int main(int argc, char *argv[]) {
-    Field field;
     StupidBot bot;
-    bot.randomGenerator(field);
-    field.printField();
-
+    auto field = bot.randomGenerator();
+    while (!field.has_value()) {
+        field = bot.randomGenerator();
+    }
+    field->printField();
     QApplication app(argc, argv);
-    MyWidget widget(field);
+    MyWidget widget(*field);
     widget.setFixedSize(500, 500);
     widget.setWindowTitle("Field");
 
