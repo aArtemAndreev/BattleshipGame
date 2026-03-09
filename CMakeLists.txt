@@ -1,9 +1,22 @@
-cmake_minimum_required(VERSION 3.10)
-project(BSGame)
+cmake_minimum_required(VERSION 4.0)
+project(BattleshipGame)
 
-set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
 
-include_directories(include/)
+set(CMAKE_PREFIX_PATH "/opt/homebrew/opt/qt")
 
-add_executable(my_project src/bsgame.cpp)
+find_package(Qt6 COMPONENTS
+        Core
+        Gui
+        Widgets
+        REQUIRED)
+
+add_executable(BattleshipGame main.cpp)
+target_link_libraries(BattleshipGame
+        Qt::Core
+        Qt::Gui
+        Qt::Widgets
+)
