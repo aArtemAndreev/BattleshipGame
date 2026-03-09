@@ -116,19 +116,18 @@ public:
         std::mt19937 gen(rd());
         bool isSet = false;
         Ship ship{};
-        for (int currentShip = 0; currentShip < 4; ++currentShip) {
-            for (int i = 0; i < 1 + currentShip; ++i) {
-                isSet = false;
-                while (!isSet) {
-                    ship.setSize(4 - currentShip);
-                    std::uniform_int_distribution<> distX(1,7);
-                    std::uniform_int_distribution<> distY(1,7);
-                    std::uniform_int_distribution<> dist01(0,1);
-                    ship.setX(distX(gen) + currentShip);
-                    ship.setY(distY(gen) + currentShip);
-                    ship.setRotation(dist01(gen));
-                    isSet = field.setShip(ship);
-                }
+        std::array<int, 10> ships = {0, 1, 2, 3, 1, 2, 3, 2, 3, 3};
+        for (const int& currentShip : ships) {
+            isSet = false;
+            while (!isSet) {
+                ship.setSize(4 - currentShip);
+                std::uniform_int_distribution<> distX(1, 7);
+                std::uniform_int_distribution<> distY(1, 7);
+                std::uniform_int_distribution<> dist01(0, 1);
+                ship.setX(distX(gen) + currentShip);
+                ship.setY(distY(gen) + currentShip);
+                ship.setRotation(dist01(gen));
+                isSet = field.setShip(ship);
             }
         }
     }
