@@ -128,6 +128,7 @@ public:
                 ship.setY(distY(gen) + currentShip);
                 ship.setRotation(dist01(gen));
                 isSet = field.setShip(ship);
+
             }
         }
     }
