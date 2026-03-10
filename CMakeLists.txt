@@ -16,10 +16,10 @@ find_package(Qt6 COMPONENTS
 
 add_executable(BattleshipGame
     main.cpp
-    src/Ship.cpp
-    src/Field.cpp
-    src/Bot.cpp
     src/MyWidget.cpp
+    src/Field.cpp
+    src/Ship.cpp
+    src/Bot.cpp
 )
 
 target_link_libraries(BattleshipGame
