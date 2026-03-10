@@ -6,7 +6,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-
+include_directories(include)
 
 find_package(Qt6 COMPONENTS
         Core
@@ -14,12 +14,11 @@ find_package(Qt6 COMPONENTS
         Widgets
         REQUIRED)
 
-add_executable(BattleshipGame main.cpp)
-
-target_include_directories(BattleshipGame PRIVATE
-    ${Qt6Core_INCLUDE_DIRS}
-    ${Qt6Gui_INCLUDE_DIRS}
-    ${Qt6Widgets_INCLUDE_DIRS}
+add_executable(BattleshipGame
+    main.cpp
+    src/Field.cpp
+    src/Bot.cpp
+    src/MyWidget.cpp
 )
 
 target_link_libraries(BattleshipGame
