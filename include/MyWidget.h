@@ -5,7 +5,6 @@
 #include "Field.h"
 
 class MyWidget : public QWidget {
-    Q_OBJECT
 
 private:
     Field field;
