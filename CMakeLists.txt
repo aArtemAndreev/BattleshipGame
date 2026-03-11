@@ -20,6 +20,7 @@ add_executable(BattleshipGame
     src/Field.cpp
     src/Ship.cpp
     src/Bot.cpp
+    src/GameWindow.cpp
 )
 
 target_link_libraries(BattleshipGame

@@ -4,15 +4,15 @@
 #include <QWidget>
 #include "Field.h"
 
-class MyWidget : public QWidget {
+class MyWidget : public QWidget {  // Убрали Q_OBJECT
+public:
+    MyWidget(Field f, QWidget *parent = nullptr);
+
+protected:
+    void paintEvent(QPaintEvent *event) override;
 
 private:
     Field field;
-    void paintEvent(QPaintEvent *event) override;
-    
-public:
-    MyWidget(Field f);
-    ~MyWidget() = default;
 };
 
 #endif
