@@ -13,18 +13,18 @@ void BattlefieldUIX::paintEvent(QPaintEvent *event) {
         painter.drawLine(50 * i, 0, 50 * i, 500);
         painter.drawLine(0, 50 * i, 500, 50 * i);
     }
-    for (int i = 1; i < 12; ++i) {
-        for (int j = 1; j < 12; ++j) {
-            if (field.getCurrentPlace(i, j) == '.') {
-                painter.fillRect(50 * (j - 1), 50 * (i - 1), 50, 50, QBrush{Qt::white});
-            }
-        }
-    }
     painter.setPen(QPen(Qt::blue, 3));
     for (const QPoint &point : m_points) {
         int x = point.x();
         int y = point.y();
-        painter.fillRect(x - x % 50, y - y % 50, 50, 50, QBrush{Qt::white});
+        x -= x % 50;
+        y -= y % 50;
+        if (field.getCurrentPlace(y / 50, x / 50) == '.') {
+            painter.fillRect(x, y, 50, 50, QBrush{Qt::white});
+            painter.drawLine(x, y, x + 50, y + 50);
+        } else {
+            painter.fillRect(x, y, 50, 50, QBrush{Qt::blue});
+        }
     }
 }
 
