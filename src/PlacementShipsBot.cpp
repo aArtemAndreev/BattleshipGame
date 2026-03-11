@@ -1,8 +1,8 @@
-#include "Bot.h"
+#include "PlacementShipsBot.h"
 #include <random>
 #include <iostream>
 
-std::optional<Field> StupidBot::randomGenerator()
+std::optional<Field>  PlacementShipsBot::randomGenerator()
 {
     Field field;
     std::random_device rd;
