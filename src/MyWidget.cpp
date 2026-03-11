@@ -13,7 +13,7 @@ void MyWidget::paintEvent(QPaintEvent *event) {
     for (int i = 1; i < 12; ++i) {
         for (int j = 1; j < 12; ++j) {
             if (field.getCurrentPlace(i, j) == '.') {
-                painter.fillRect(50 * (j - 1), 50 * (i - 1), 50, 50, QBrush{"#ffffff"});
+                painter.fillRect(50 * (j - 1), 50 * (i - 1), 50, 50, QBrush{Qt::white});
             }
         }
     }
