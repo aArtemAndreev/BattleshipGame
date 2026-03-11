@@ -8,7 +8,7 @@
 class  PlacementShipsBot {
 public:
      PlacementShipsBot() = default;
-    std::optional<Field> randomGenerator();
+    static std::optional<Field> randomGenerator();
 };
 
 #endif
