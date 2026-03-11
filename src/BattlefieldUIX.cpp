@@ -19,7 +19,7 @@ void BattlefieldUIX::paintEvent(QPaintEvent *event) {
         int y = point.y();
         x -= x % 50;
         y -= y % 50;
-        if (field.getCurrentPlace(y / 50, x / 50) == '.') {
+        if (field.getCurrentPlace(y / 50 + 1, x / 50 + 1) == '.') {
             painter.fillRect(x, y, 50, 50, QBrush{Qt::white});
             painter.drawLine(x, y, x + 50, y + 50);
         } else {
