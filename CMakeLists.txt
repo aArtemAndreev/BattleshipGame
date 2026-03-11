@@ -25,6 +25,7 @@ add_executable(BattleshipGame
         src/Battlefield.cpp
         include/BattlefieldUIX.h
         src/BattlefieldUIX.cpp
+        src/ShooterBot.cpp
 )
 
 target_link_libraries(BattleshipGame

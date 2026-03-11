@@ -1,3 +1,21 @@
-//
-// Created by Maxim Martynov on 11/03/2026.
-//
+#include <QPainter>
+#include "ShooterBot.h"
+
+ShooterBot::ShooterBot(Field f, QWidget *parent) : QWidget(parent), field(f) {}
+
+void ShooterBot::paintEvent(QPaintEvent *event) {
+    QPainter painter(this);
+    painter.fillRect(0, 0, 500, 500, QBrush{"#2980b9"});
+    for (int i = 1; i <= 9; ++i) {
+        painter.drawLine(50 * i, 0, 50 * i, 500);
+        painter.drawLine(0, 50 * i, 500, 50 * i);
+    }
+
+    for (int i = 1; i < 12; ++i) {
+        for (int j = 1; j < 12; ++j) {
+            if (field.getCurrentPlace(i, j) == '.') {
+                painter.fillRect(50 * (j - 1), 50 * (i - 1), 50, 50, QBrush{Qt::white});
+            }
+        }
+    }
+}

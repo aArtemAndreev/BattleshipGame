@@ -1,7 +1,6 @@
 #include "BattlefieldUIX.h"
 #include <QPainter>
 #include <QMouseEvent>
-#include <iostream>
 
 BattlefieldUIX::BattlefieldUIX(Field f, QWidget *parent) : QWidget(parent), field(f) {}
 
@@ -25,7 +24,6 @@ void BattlefieldUIX::paintEvent(QPaintEvent *event) {
     for (const QPoint &point : m_points) {
         int x = point.x();
         int y = point.y();
-        std::cout << x << ' ' << y << '\n';
         painter.fillRect(x - x % 50, y - y % 50, 50, 50, QBrush{Qt::white});
     }
 }
