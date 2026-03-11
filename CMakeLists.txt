@@ -19,8 +19,8 @@ add_executable(BattleshipGame
     src/MyWidget.cpp
     src/Field.cpp
     src/Ship.cpp
-    src/Bot.cpp
     src/GameWindow.cpp
+    src/PlacementShipsBot.cpp
 )
 
 target_link_libraries(BattleshipGame
