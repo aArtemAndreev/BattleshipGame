@@ -21,6 +21,8 @@ add_executable(BattleshipGame
     src/Ship.cpp
     src/GameWindow.cpp
     src/PlacementShipsBot.cpp
+        include/Battlefield.h
+        src/Battlefield.cpp
 )
 
 target_link_libraries(BattleshipGame

@@ -10,6 +10,8 @@ public:
 
 private:
     Field field;
+private slots:
+    void goToBattlefield();
 };
 
 #endif
