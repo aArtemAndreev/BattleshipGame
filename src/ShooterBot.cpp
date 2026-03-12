@@ -235,6 +235,7 @@ if (result == Kill)
     }
 }
 
+
 void ShooterBot::printMemory() const
 {
     for (int y = 1; y <= 10; ++y)
