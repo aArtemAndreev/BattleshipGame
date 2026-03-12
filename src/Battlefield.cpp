@@ -4,6 +4,7 @@
 #include "BattlefieldUIX.h"
 #include "ShooterBot.h"
 
+
 BattlefieldWindow::BattlefieldWindow(QWidget* parent, Field playerField, Field botField) : playerField(playerField), botField(botField) {
     setWindowTitle("Морской бой");
     setFixedSize(1200, 600);
@@ -11,7 +12,7 @@ BattlefieldWindow::BattlefieldWindow(QWidget* parent, Field playerField, Field b
     QHBoxLayout* layout = new QHBoxLayout(this);
 
 
-    BattlefieldUIX* mapPlayerWidget = new BattlefieldUIX(playerField, this);
+    ShooterBot* mapPlayerWidget = new ShooterBot(playerField, this);
     mapPlayerWidget->setFixedSize(500, 500);
 
     BattlefieldUIX* mapBotWidget = new BattlefieldUIX(botField, this);

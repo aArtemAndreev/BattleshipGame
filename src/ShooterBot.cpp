@@ -2,6 +2,26 @@
 #include <random>
 #include <iostream>
 #include <algorithm>
+#include <QPainter>
+
+ShooterBot::ShooterBot(Field f,  QWidget *parent) : QWidget(parent), field(f) {}
+
+void ShooterBot::paintEvent(QPaintEvent *event) {
+    QPainter painter(this);
+    painter.fillRect(0, 0, 500, 500, QBrush{"#2980b9"});
+    for (int i = 1; i <= 9; ++i) {
+        painter.drawLine(50 * i, 0, 50 * i, 500);
+        painter.drawLine(0, 50 * i, 500, 50 * i);
+    }
+
+    for (int i = 1; i < 12; ++i) {
+        for (int j = 1; j < 12; ++j) {
+            if (field.getCurrentPlace(i, j) == '.') {
+                painter.fillRect(50 * (j - 1), 50 * (i - 1), 50, 50, QBrush{Qt::white});
+            }
+        }
+    }
+}
 
 ShooterBot::ShooterBot()
     : targetMode(false)
@@ -112,6 +132,120 @@ void ShooterBot::clearCurrentTarget()
     currentHits.clear();
     targetMode = false;
 }
+void ShooterBot::markAroundKilledShip()
+{
+    for (const auto& hit : currentHits)
+    {
+        int x = hit.first;
+        int y = hit.second;
 
+        for (int dy = -1; dy <= 1; ++dy)
+        {
+            for (int dx = -1; dx <= 1; ++dx)
+            {
+                int nx = x + dx;
+                int ny = y + dy;
+
+                if (!isInside(nx, ny))
+                {
+                    continue;
+                }
+
+                if (enemyShots[ny][nx] == '0')
+                {
+                    enemyShots[ny][nx] = '-';
+                }
+            }
+        }
+    }
+}
+
+std::pair<int, int> ShooterBot::makeShot()
+{
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+
+    if (targetMode)
+    {
+        while (!targetQueue.empty())
+        {
+            std::pair<int, int> shot = targetQueue.front();
+            targetQueue.erase(targetQueue.begin());
+
+            int x = shot.first;
+            int y = shot.second;
+
+            if (enemyShots[y][x] == '0')
+            {
+                return shot;
+            }
+        }
+    }
+
+    std::uniform_int_distribution<> distX(1, 10);
+    std::uniform_int_distribution<> distY(1, 10);
+
+    int x;
+    int y;
+
+    do
+    {
+        x = distX(gen);
+        y = distY(gen);
+    }
+    while (enemyShots[y][x] != '0');
+
+    return {x, y};
+}
+
+void ShooterBot::rememberShot(int x, int y, ShotResult result)
+{
+    if (result == Miss)
+    {
+        enemyShots[y][x] = '*';
+        return;
+    }
+
+    if (result == Hit)
+    {
+        enemyShots[y][x] = 'X';
+        currentHits.push_back({x, y});
+        targetMode = true;
+
+        if (currentHits.size() == 1)
+        {
+            addNeighbors(x, y);
+        }
+        else
+        {
+            rekillTargetsByDirection();
+        }
+
+        return;
+    }
+
+
+if (result == Kill)
+    {
+        enemyShots[y][x] = 'X';
+        currentHits.push_back({x, y});
+
+        markAroundKilledShip();
+        clearCurrentTarget();
+    }
+}
+
+
+void ShooterBot::printMemory() const
+{
+    for (int y = 1; y <= 10; ++y)
+    {
+        for (int x = 1; x <= 10; ++x)
+        {
+            std::cout << enemyShots[y][x] << ' ';
+        }
+        std::cout << '\n';
+    }
+}
 
 
