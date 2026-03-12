@@ -24,7 +24,7 @@ private:
 
 public:
     ShooterBot();
-
+    void addTarget(int x, int y);
     std::pair<int,int> makeShot();
     void rememberShot(int x, int y, ShotResult result);
     void printMemory() const;

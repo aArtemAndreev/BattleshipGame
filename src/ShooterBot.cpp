@@ -20,5 +20,23 @@ bool ShooterBot::isInside(int x, int y) const
     return x >= 1 && x <= 10 && y >= 1 && y <= 10;
 }
 
+void ShooterBot::addTarget(int x, int y)
+{
+    if (!isInside(x, y))
+    {
+        return;
+    }
 
+    if (enemyShots[y][x] != '0')
+    {
+        return;
+    }
+
+    std::pair<int, int> target = {x, y};
+
+    if (std::find(targetQueue.begin(), targetQueue.end(), target) == targetQueue.end())
+    {
+        targetQueue.push_back(target);
+    }
+}
 
