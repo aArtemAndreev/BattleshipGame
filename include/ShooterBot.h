@@ -2,21 +2,32 @@
 #define BATTLESHIPGAME_SHOOTERBOT_H
 
 #include <utility>
-#include <QWidget>
-#include "Field.h"
+#include <vector>
 
-class ShooterBot : public QWidget{
-public:
-    ShooterBot(Field f, QWidget *parent = nullptr);
-
-    std::pair<int,int> makeShot();
-    void rememberShot(int x,int y,bool hit);
-    void printMemory() const;
-protected:
-    void paintEvent(QPaintEvent *event) override;
-private:
-    char enemyShots[12][12];
-    Field field;
+enum ShotResult
+{
+    Miss,
+    Hit,
+    Kill
 };
 
-#endif //BATTLESHIPGAME_SHOOTERBOT_H
+class ShooterBot
+{
+private:
+    char enemyShots[12][12];
+    std::vector<std::pair<int,int>> targetQueue;
+    std::vector<std::pair<int,int>> currentHits;
+    bool targetMode;
+
+    bool isInside(int x, int y) const;
+
+
+public:
+    ShooterBot();
+
+    std::pair<int,int> makeShot();
+    void rememberShot(int x, int y, ShotResult result);
+    void printMemory() const;
+};
+
+#endif
