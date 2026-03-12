@@ -12,6 +12,7 @@ private:
     Field field;
 private slots:
     void goToBattlefield();
+    void rotateShips();
 };
 
 #endif

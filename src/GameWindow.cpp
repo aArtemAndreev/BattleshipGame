@@ -18,6 +18,11 @@ GameWindow::GameWindow(QWidget *parent) : QWidget(parent) {
     leftPanel->setFixedWidth(200);
 
     QVBoxLayout* leftLayout = new QVBoxLayout(leftPanel);
+
+    QPushButton* rotateButton = new QPushButton("Повернуть", this);
+    rotateButton->setFixedSize(150, 30);
+    connect(rotateButton, &QPushButton::clicked, this, &GameWindow::rotateShips);
+    leftLayout->addWidget(rotateButton);
     
     QPushButton* startButton = new QPushButton("Начать игру", this);
     startButton->setFixedSize(150, 50);
@@ -32,6 +37,15 @@ GameWindow::GameWindow(QWidget *parent) : QWidget(parent) {
 
     layout->addWidget(leftPanel);
     layout->addWidget(mapWidget);
+}
+
+void GameWindow::rotateShips() {
+    static bool isHorizontal = true;
+    isHorizontal = !isHorizontal;
+    QPushButton* btn = qobject_cast<QPushButton*>(sender());
+    if (btn) {
+        btn->setText(isHorizontal ? "Гориз" : "Верт");
+    }
 }
 
 void GameWindow::goToBattlefield() {
