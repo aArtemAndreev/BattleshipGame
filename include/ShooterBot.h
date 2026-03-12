@@ -26,6 +26,7 @@ private:
     void clearCurrentTarget();
 
 
+
 public:
     ShooterBot();
     std::pair<int,int> makeShot();
