@@ -8,7 +8,7 @@
 #include "Battlefield.h"
 #include "PlacementShipsBot.h"
 
-GameWindow::GameWindow(QWidget *parent) : QWidget(parent), selectedShip(nullptr), currentOrientation(true) {
+GameWindow::GameWindow(QWidget *parent) : QWidget(parent), selectedShip(nullptr), currentOrientation(true), shipsPlaced(0) {
     setWindowTitle("Морской бой");
     setFixedSize(800, 600);
     
@@ -24,6 +24,11 @@ GameWindow::GameWindow(QWidget *parent) : QWidget(parent), selectedShip(nullptr)
     rotateButton->setFixedSize(150, 30);
     connect(rotateButton, &QPushButton::clicked, this, &GameWindow::rotateShips);
     leftLayout->addWidget(rotateButton);
+
+    infoLabel = new QLabel("Выбери корабль", this);
+    infoLabel->setWordWrap(true);
+    infoLabel->setStyleSheet("color: #2c3e50; font-weight: bold;");
+    leftLayout->addWidget(infoLabel);
 
     ShipItem* ship4 = new ShipItem(4, 1, this, this);
     ships.append(ship4);
@@ -43,15 +48,16 @@ GameWindow::GameWindow(QWidget *parent) : QWidget(parent), selectedShip(nullptr)
 
     leftLayout->addStretch();
     
-    QPushButton* startButton = new QPushButton("Начать игру", this);
+    startButton = new QPushButton("Начать игру", this);
     startButton->setFixedSize(150, 50);
+    startButton->setEnabled(false);
 
     connect(startButton, &QPushButton::clicked, this, &GameWindow::goToBattlefield);
 
     leftLayout->addWidget(startButton);
     leftLayout->addStretch();
 
-    MyWidget* mapWidget = new MyWidget(field, this, this);
+    mapWidget = new MyWidget(field, this, this);
     mapWidget->setFixedSize(500, 500);
 
     layout->addWidget(leftPanel);
@@ -67,6 +73,12 @@ void GameWindow::rotateShips() {
     if (btn) {
         btn->setText(currentOrientation ? "Гориз" : "Верт");
     }
+
+    if (selectedShip) {
+        selectedShip->setSelected(false);
+        selectedShip = nullptr;
+        infoLabel->setText("Выберите корабль");
+    }
 }
 
 void GameWindow::onShipSelected(ShipItem* ship) {
@@ -75,10 +87,67 @@ void GameWindow::onShipSelected(ShipItem* ship) {
     }
 
     selectedShip = ship;
+    infoLabel->setText(QString("Выбран %1-палубный корабль").arg(ship->getSize()));
 }
 
 void GameWindow::onCellClicked(int x, int y) {
-    qDebug() << "Клик по клетке:" << x << y;
+    qDebug() << "=== onCellClicked ===";
+    qDebug() << "x от мыши:" << x << "y от мыши:" << y;
+    qDebug() << "x для поля:" << x + 1 << "y для поля:" << y + 1;
+
+    if (!selectedShip) {
+        infoLabel->setText("Эуу корабль выбери да");
+        return;
+    }
+
+    if (!selectedShip->canPlace()) {
+        infoLabel->setText("Все корабль на поле");
+        return;
+    }
+
+    Ship templateShip = selectedShip->getShipTemplate();
+    qDebug() << "Размер корабля:" << templateShip.getSize();
+    qDebug() << "Ориентация:" << (templateShip.getRotation() == 0 ? "гориз" : "верт");
+
+    Ship shipToPlace(templateShip.getSize(), x + 1, y + 1, templateShip.getRotation());
+    qDebug() << "Пытаюсь поставить...";
+    if (field.setShip(shipToPlace)) {
+        qDebug() << "УСПЕХ!";
+        qDebug() << "=== После успешной установки ===";
+        qDebug() << "Шаг 1: decrement()";
+        selectedShip->decrement();
+        qDebug() << "Шаг 2: setSelected(false)";
+        selectedShip->setSelected(false);
+        qDebug() << "Шаг 3: selectedShip = nullptr";
+        selectedShip = nullptr;
+        qDebug() << "Шаг 4: mapWidget->update()";
+        qDebug() << "  Проверка mapWidget перед update:";
+        if (!mapWidget) {
+            qDebug() << "  ❌ mapWidget = nullptr!";
+            return;
+        }
+        if (!mapWidget->isVisible()) {
+            qDebug() << "  ⚠️ mapWidget не видим";
+        }
+        qDebug() << "  после проверки mapWidget";
+        qDebug() << "  Вызываем update()";
+        mapWidget->update();
+        qDebug() << "Шаг 5: infoLabel update";
+        infoLabel->setText("Корабль поставлен");
+        shipsPlaced++;
+        qDebug() << "shipsPlaced =" << shipsPlaced;
+        if (shipsPlaced >= 10) {
+            qDebug() << "Шаг 6: активация кнопки";
+            infoLabel->setText("Все корабли поставлены");
+            if (startButton) {
+                startButton->setEnabled(true);
+            }
+        }
+        qDebug() << "=== Конец обработки ===";
+    } else {
+        qDebug() << "НЕУДАЧА";
+        infoLabel->setText("Низзя сюда");
+    }
 }
 
 void GameWindow::goToBattlefield() {

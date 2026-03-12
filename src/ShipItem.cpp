@@ -1,5 +1,6 @@
 #include "ShipItem.h"
 #include "GameWindow.h"
+#include <QDebug>
 
 ShipItem::ShipItem(int size, int count, GameWindow* gameWindow, QWidget *parent) : QWidget(parent), ship(size, 0, 0, 0), remaining(count), isSelected(false), gameWindow(gameWindow) {
     setFixedHeight(50);
@@ -62,5 +63,6 @@ void ShipItem::decrement() {
 }
 
 Ship ShipItem::getShipTemplate() const {
+    qDebug() << "getShipTemplate: размер=" << ship.getSize() << "ориентация=" << ship.getRotation();
     return Ship(ship.getSize(), 0, 0, ship.getRotation());
 }
