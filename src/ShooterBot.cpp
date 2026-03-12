@@ -46,4 +46,72 @@ void ShooterBot::addNeighbors(int x, int y)
     addTarget(x, y + 1);
     addTarget(x, y - 1);
 }
+void ShooterBot::rekillTargetsByDirection()
+{
+    if (currentHits.size() < 2)
+    {
+        return;
+    }
+
+    targetQueue.clear();
+
+    bool sameX = true;
+    bool sameY = true;
+
+    int firstX = currentHits[0].first;
+    int firstY = currentHits[0].second;
+
+    for (const auto& hit : currentHits)
+    {
+        if (hit.first != firstX)
+        {
+            sameX = false;
+        }
+
+        if (hit.second != firstY)
+        {
+            sameY = false;
+        }
+    }
+
+    if (sameY)
+    {
+        int y = firstY;
+        int minX = currentHits[0].first;
+        int maxX = currentHits[0].first;
+
+        for (const auto& hit : currentHits)
+        {
+            minX = std::min(minX, hit.first);
+            maxX = std::max(maxX, hit.first);
+        }
+
+        addTarget(minX - 1, y);
+        addTarget(maxX + 1, y);
+    }
+    else if (sameX)
+    {
+        int x = firstX;
+        int minY = currentHits[0].second;
+        int maxY = currentHits[0].second;
+
+        for (const auto& hit : currentHits)
+        {
+            minY = std::min(minY, hit.second);
+            maxY = std::max(maxY, hit.second);
+        }
+
+        addTarget(x, minY - 1);
+        addTarget(x, maxY + 1);
+    }
+}
+
+void ShooterBot::clearCurrentTarget()
+{
+    targetQueue.clear();
+    currentHits.clear();
+    targetMode = false;
+}
+
+
 
