@@ -1,7 +1,8 @@
 #include "Battlefield.h"
 #include <QWidget>
 #include <QHBoxLayout>
-#include "MyWidget.h"
+#include "BattlefieldUIX.h"
+#include "ShooterBot.h"
 
 BattlefieldWindow::BattlefieldWindow(QWidget* parent, Field playerField, Field botField) : playerField(playerField), botField(botField) {
     setWindowTitle("Морской бой");
@@ -10,13 +11,19 @@ BattlefieldWindow::BattlefieldWindow(QWidget* parent, Field playerField, Field b
     QHBoxLayout* layout = new QHBoxLayout(this);
 
 
-    MyWidget* mapPlayerWidget = new MyWidget(playerField, this);
+    ShooterBot* mapPlayerWidget = new ShooterBot(playerField, this);
     mapPlayerWidget->setFixedSize(500, 500);
 
 
-    MyWidget* mapBotWidget = new MyWidget(botField, this);
+    BattlefieldUIX* mapBotWidget = new BattlefieldUIX(botField, this);
     mapBotWidget->setFixedSize(500, 500);
 
     layout->addWidget(mapPlayerWidget);
     layout->addWidget(mapBotWidget);
+
+//    int playerPoints = 0;
+//    int botPoints = 0;
+//    while (playerPoints < 10 && botPoints < 10) {
+//
+//    }
 }
