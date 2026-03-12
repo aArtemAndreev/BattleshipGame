@@ -11,9 +11,8 @@ BattlefieldWindow::BattlefieldWindow(QWidget* parent, Field playerField, Field b
     QHBoxLayout* layout = new QHBoxLayout(this);
 
 
-    ShooterBot* mapPlayerWidget = new ShooterBot(playerField, this);
+    BattlefieldUIX* mapPlayerWidget = new BattlefieldUIX(playerField, this);
     mapPlayerWidget->setFixedSize(500, 500);
-
 
     BattlefieldUIX* mapBotWidget = new BattlefieldUIX(botField, this);
     mapBotWidget->setFixedSize(500, 500);
