@@ -22,6 +22,8 @@ private:
     bool isInside(int x, int y) const;
     void addTarget(int x, int y);
     void addNeighbors(int x, int y);
+    void rekillTargetsByDirection();
+    void clearCurrentTarget();
 
 
 public:
