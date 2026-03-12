@@ -11,7 +11,7 @@ class GameWindow : public QWidget {
 public:
     GameWindow(QWidget *parent = nullptr);
     void onShipSelected(ShipItem* ship);
-
+    void onCellClicked(int x, int y);
 private:
     Field field;
     MyWidget* mapWidget;
@@ -21,7 +21,6 @@ private:
 private slots:
     void goToBattlefield();
     void rotateShips();
-    void onCellClicked(int x, int y);
 };
 
 #endif

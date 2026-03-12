@@ -3,6 +3,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QMessageBox>
+#include <QDebug>
 #include "MyWidget.h"
 #include "Battlefield.h"
 #include "PlacementShipsBot.h"
@@ -50,7 +51,7 @@ GameWindow::GameWindow(QWidget *parent) : QWidget(parent), selectedShip(nullptr)
     leftLayout->addWidget(startButton);
     leftLayout->addStretch();
 
-    MyWidget* mapWidget = new MyWidget(field, this);
+    MyWidget* mapWidget = new MyWidget(field, this, this);
     mapWidget->setFixedSize(500, 500);
 
     layout->addWidget(leftPanel);
@@ -74,6 +75,10 @@ void GameWindow::onShipSelected(ShipItem* ship) {
     }
 
     selectedShip = ship;
+}
+
+void GameWindow::onCellClicked(int x, int y) {
+    qDebug() << "Клик по клетке:" << x << y;
 }
 
 void GameWindow::goToBattlefield() {
