@@ -20,11 +20,12 @@ private:
     bool targetMode;
 
     bool isInside(int x, int y) const;
+    void addTarget(int x, int y);
+    void addNeighbors(int x, int y);
 
 
 public:
     ShooterBot();
-    void addTarget(int x, int y);
     std::pair<int,int> makeShot();
     void rememberShot(int x, int y, ShotResult result);
     void printMemory() const;
