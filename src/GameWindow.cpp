@@ -7,7 +7,7 @@
 #include "Battlefield.h"
 #include "PlacementShipsBot.h"
 
-GameWindow::GameWindow(QWidget *parent) : QWidget(parent) {
+GameWindow::GameWindow(QWidget *parent) : QWidget(parent), selectedShip(nullptr), currentOrientation(true) {
     setWindowTitle("Морской бой");
     setFixedSize(800, 600);
     
@@ -23,6 +23,24 @@ GameWindow::GameWindow(QWidget *parent) : QWidget(parent) {
     rotateButton->setFixedSize(150, 30);
     connect(rotateButton, &QPushButton::clicked, this, &GameWindow::rotateShips);
     leftLayout->addWidget(rotateButton);
+
+    ShipItem* ship4 = new ShipItem(4, 1, this, this);
+    ships.append(ship4);
+    leftLayout->addWidget(ship4);
+
+    ShipItem* ship3 = new ShipItem(3, 2, this, this);
+    ships.append(ship3);
+    leftLayout->addWidget(ship3);
+
+    ShipItem* ship2 = new ShipItem(2, 3, this, this);
+    ships.append(ship2);
+    leftLayout->addWidget(ship2);
+
+    ShipItem* ship1 = new ShipItem(1, 4, this, this);
+    ships.append(ship1);
+    leftLayout->addWidget(ship1);
+
+    leftLayout->addStretch();
     
     QPushButton* startButton = new QPushButton("Начать игру", this);
     startButton->setFixedSize(150, 50);
@@ -40,12 +58,22 @@ GameWindow::GameWindow(QWidget *parent) : QWidget(parent) {
 }
 
 void GameWindow::rotateShips() {
-    static bool isHorizontal = true;
-    isHorizontal = !isHorizontal;
+    currentOrientation = !currentOrientation;
+    for (ShipItem* ship : ships) {
+        ship->setHorizontal(currentOrientation);
+    }
     QPushButton* btn = qobject_cast<QPushButton*>(sender());
     if (btn) {
-        btn->setText(isHorizontal ? "Гориз" : "Верт");
+        btn->setText(currentOrientation ? "Гориз" : "Верт");
     }
+}
+
+void GameWindow::onShipSelected(ShipItem* ship) {
+    if (selectedShip) {
+        selectedShip->setSelected(false);
+    }
+
+    selectedShip = ship;
 }
 
 void GameWindow::goToBattlefield() {
