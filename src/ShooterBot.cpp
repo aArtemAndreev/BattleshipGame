@@ -39,4 +39,11 @@ void ShooterBot::addTarget(int x, int y)
         targetQueue.push_back(target);
     }
 }
+void ShooterBot::addNeighbors(int x, int y)
+{
+    addTarget(x + 1, y);
+    addTarget(x - 1, y);
+    addTarget(x, y + 1);
+    addTarget(x, y - 1);
+}
 
