@@ -14,6 +14,9 @@ public:
     GameWindow(QWidget *parent = nullptr);
     void onShipSelected(ShipItem* ship);
     void onCellClicked(int x, int y);
+    Field getPlayerField() const { 
+        return field; 
+    }
 private:
     Field field;
     MyWidget* mapWidget;
