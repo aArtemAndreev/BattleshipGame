@@ -85,14 +85,51 @@ bool Field::setShip(Ship ship) {
     }
     return true;
 }
-
 char Field::getCurrentPlace(int y, int x) const {
-    if (y < 0 || y > 11 || x < 0 || x > 11) {
-        return '0';
-    }
     return field[y][x];
 }
-
 void Field::setCurrentPlace(int y, int x, char c) {
-    field[y][x] = c;
+    if (y >= 1 && y <= 10 && x >= 1 && x <= 10) {
+        field[y][x] = c;
+    }
+}
+
+void Field::setShipState(int y, int x, int state) {
+    if (y >= 1 && y <= 10 && x >= 1 && x <= 10) {
+        shipStates[y][x] = state;
+    }
+}
+
+int Field::getShipState(int y, int x) const {
+    return shipStates[y][x];
+}
+
+bool Field::isShipDamaged(int y, int x) const {
+    if (y >= 1 && y <= 10 && x >= 1 && x <= 10) {
+        return shipStates[y][x] == 1;
+    }
+    return false;
+}
+
+bool Field::isShipSunk(int y, int x) const {
+    if (y >= 1 && y <= 10 && x >= 1 && x <= 10) {
+        return shipStates[y][x] == 2;
+    }
+    return false;
+}
+
+void Field::markShipAsDamaged(int y, int x) {
+    if (y >= 1 && y <= 10 && x >= 1 && x <= 10) {
+        if (field[y][x] == '.') {
+            shipStates[y][x] = 1;
+        }
+    }
+}
+
+void Field::markShipAsSunk(int y, int x) {
+    if (y >= 1 && y <= 10 && x >= 1 && x <= 10) {
+        if (field[y][x] == '.') {
+            shipStates[y][x] = 2;
+        }
+    }
 }
