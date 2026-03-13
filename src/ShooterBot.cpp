@@ -4,7 +4,38 @@
 #include <algorithm>
 #include <QPainter>
 
-ShooterBot::ShooterBot(Field f, std::shared_ptr<bool> whoseStep, QWidget *parent) : QWidget(parent), field(f), whoseStep(whoseStep) {}
+ShooterBot::ShooterBot(Field f, std::shared_ptr<bool> whoseStep, QWidget *parent) 
+    : QWidget(parent), field(f), whoseStep(whoseStep) 
+{
+    targetMode = false;
+    lastHitX = -1;
+    lastHitY = -1;
+    currentDirection = 0;
+    
+    for (int y = 0; y < 12; ++y)
+    {
+        for (int x = 0; x < 12; ++x)
+        {
+            enemyShots[y][x] = '0';
+        }
+    }
+}
+
+ShooterBot::ShooterBot()
+    : targetMode(false)
+{
+    lastHitX = -1;
+    lastHitY = -1;
+    currentDirection = 0;
+    
+    for (int y = 0; y < 12; ++y)
+    {
+        for (int x = 0; x < 12; ++x)
+        {
+            enemyShots[y][x] = '0';
+        }
+    }
+}
 
 void ShooterBot::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
@@ -14,49 +45,37 @@ void ShooterBot::paintEvent(QPaintEvent *event) {
         painter.drawLine(0, 50 * i, 500, 50 * i);
     }
 
-    painter.setPen(QPen(Qt::blue, 3));
     for (int i = 1; i < 12; ++i) {
         for (int j = 1; j < 12; ++j) {
             int x = 50 * (j - 1);
             int y = 50 * (i - 1);
             if (field.getCurrentPlace(i, j) == '.') {
-                painter.fillRect(x, y, 50, 50, QBrush{Qt::white});
-            } else if (field.getCurrentPlace(i, j) == '/') {
-                painter.fillRect(x, y, 50, 50, QBrush{Qt::white});
-                painter.drawLine(x, y, x + 50, y + 50);
-            } else if (field.getCurrentPlace(i, j) == 'E') {
-                painter.fillRect(x, y, 50, 50, QBrush{Qt::blue});
+                if (field.isShipSunk(i, j)) {
+                    painter.fillRect(x, y, 50, 50, QBrush{Qt::black});
+                } else if (field.isShipDamaged(i, j)) {
+                    painter.fillRect(x, y, 50, 50, QBrush{Qt::yellow});
+                } else {
+                    painter.fillRect(x, y, 50, 50, QBrush{Qt::white});
+                }
             }
         }
     }
-
-    if (*whoseStep) {
-        std::random_device rd;
-        std::mt19937 gen(rd());
-        std::uniform_int_distribution<> distX(1, 500);
-        std::uniform_int_distribution<> distY(1, 500);
-        int x = distX(gen);
-        int y = distY(gen);
-        x -= x % 50;
-        y -= y % 50;
-        if (field.getCurrentPlace(y / 50 + 1, x / 50 + 1) == '.') {
-            field.setCurrentPlace(y / 50 + 1, x / 50 + 1, '/');
-        } else if (field.getCurrentPlace(y / 50 + 1, x / 50 + 1) == '0') {
-            field.setCurrentPlace(y / 50 + 1, x / 50 + 1, 'E');
-        }
-        *whoseStep = false;
-    }
-    update();
-}
-
-ShooterBot::ShooterBot()
-    : targetMode(false)
-{
-    for (int y = 0; y < 12; ++y)
-    {
-        for (int x = 0; x < 12; ++x)
-        {
-            enemyShots[y][x] = '0';
+    
+    painter.setPen(QPen(Qt::red, 4));
+    for (int i = 1; i < 12; ++i) {
+        for (int j = 1; j < 12; ++j) {
+            int x = 50 * (j - 1);
+            int y = 50 * (i - 1);
+            
+            if (enemyShots[i][j] == 'X') {
+                painter.drawLine(x + 5, y + 5, x + 45, y + 45);
+                painter.drawLine(x + 45, y + 5, x + 5, y + 45);
+            } else if (enemyShots[i][j] == '*') {
+                painter.setBrush(Qt::white);
+                painter.setPen(Qt::white);
+                painter.drawEllipse(x + 15, y + 15, 20, 20);
+                painter.setPen(QPen(Qt::red, 4));
+            }
         }
     }
 }
@@ -85,6 +104,7 @@ void ShooterBot::addTarget(int x, int y)
         targetQueue.push_back(target);
     }
 }
+
 void ShooterBot::addNeighbors(int x, int y)
 {
     addTarget(x + 1, y);
@@ -92,6 +112,7 @@ void ShooterBot::addNeighbors(int x, int y)
     addTarget(x, y + 1);
     addTarget(x, y - 1);
 }
+
 void ShooterBot::rekillTargetsByDirection()
 {
     if (currentHits.size() < 2)
@@ -157,7 +178,11 @@ void ShooterBot::clearCurrentTarget()
     targetQueue.clear();
     currentHits.clear();
     targetMode = false;
+    lastHitX = -1;
+    lastHitY = -1;
+    currentDirection = 0;
 }
+
 void ShooterBot::markAroundKilledShip()
 {
     for (const auto& hit : currentHits)
@@ -191,7 +216,7 @@ std::pair<int, int> ShooterBot::makeShot()
     static std::random_device rd;
     static std::mt19937 gen(rd());
 
-    if (targetMode)
+    if (targetMode && !targetQueue.empty())
     {
         while (!targetQueue.empty())
         {
@@ -205,6 +230,26 @@ std::pair<int, int> ShooterBot::makeShot()
             {
                 return shot;
             }
+        }
+    }
+    
+    if (lastHitX != -1 && lastHitY != -1 && currentDirection != 0)
+    {
+        int newX = lastHitX;
+        int newY = lastHitY;
+        
+        if (currentDirection == 1) newY = lastHitY - 1;
+        else if (currentDirection == 2) newY = lastHitY + 1;
+        else if (currentDirection == 3) newX = lastHitX - 1;
+        else if (currentDirection == 4) newX = lastHitX + 1;
+        
+        if (isInside(newX, newY) && enemyShots[newY][newX] == '0')
+        {
+            return {newX, newY};
+        }
+        else
+        {
+            currentDirection = 0;
         }
     }
 
@@ -229,6 +274,11 @@ void ShooterBot::rememberShot(int x, int y, ShotResult result)
     if (result == Miss)
     {
         enemyShots[y][x] = '*';
+        
+        if (targetMode)
+        {
+            currentDirection = 0;
+        }
         return;
     }
 
@@ -237,10 +287,31 @@ void ShooterBot::rememberShot(int x, int y, ShotResult result)
         enemyShots[y][x] = 'X';
         currentHits.push_back({x, y});
         targetMode = true;
+        
+        lastHitX = x;
+        lastHitY = y;
 
         if (currentHits.size() == 1)
         {
             addNeighbors(x, y);
+            currentDirection = 0;
+        }
+        else if (currentHits.size() == 2)
+        {
+            int firstX = currentHits[0].first;
+            int firstY = currentHits[0].second;
+            
+            if (firstX == x)
+            {
+                currentDirection = (y > firstY) ? 2 : 1;
+            }
+            else if (firstY == y)
+            {
+                currentDirection = (x > firstX) ? 4 : 3;
+            }
+            
+            targetQueue.clear();
+            rekillTargetsByDirection();
         }
         else
         {
@@ -250,17 +321,17 @@ void ShooterBot::rememberShot(int x, int y, ShotResult result)
         return;
     }
 
-
-if (result == Kill)
+    if (result == Kill)
     {
         enemyShots[y][x] = 'X';
         currentHits.push_back({x, y});
 
         markAroundKilledShip();
         clearCurrentTarget();
+        
+        targetMode = false;
     }
 }
-
 
 void ShooterBot::printMemory() const
 {
@@ -273,5 +344,3 @@ void ShooterBot::printMemory() const
         std::cout << '\n';
     }
 }
-
-

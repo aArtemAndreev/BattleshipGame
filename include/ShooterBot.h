@@ -4,6 +4,7 @@
 #include <utility>
 #include <vector>
 #include <QWidget>
+#include <memory>
 #include "Field.h"
 
 enum ShotResult
@@ -21,6 +22,10 @@ private:
     std::vector<std::pair<int,int>> targetQueue;
     std::vector<std::pair<int,int>> currentHits;
     bool targetMode;
+    
+    int lastHitX;
+    int lastHitY;
+    int currentDirection; 
 
     bool isInside(int x, int y) const;
     void addTarget(int x, int y);
@@ -39,6 +44,5 @@ public:
     void rememberShot(int x, int y, ShotResult result);
     void printMemory() const;
 };
-
 
 #endif

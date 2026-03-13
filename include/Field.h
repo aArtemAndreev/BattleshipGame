@@ -14,14 +14,14 @@ public:
     Field& operator=(const Field& other);
     void printField();
     bool setShip(Ship ship);
-    void setCurrentPlace(int y, int x, char c);
     char getCurrentPlace(int y, int x) const;
-    void setShipState(int y, int x, int state);
-    int getShipState(int y, int x) const;   
-    bool isShipDamaged(int y, int x) const;
-    bool isShipSunk(int y, int x) const;
-    void markShipAsDamaged(int y, int x);
-    void markShipAsSunk(int y, int x);
+    
+    void setShipState(int y, int x, int state);  
+    int getShipState(int y, int x) const;        
+    bool isShipDamaged(int y, int x) const;     
+    bool isShipSunk(int y, int x) const;         
+    void markShipAsDamaged(int y, int x);       
+    void markShipAsSunk(int y, int x);           
 
     ~Field() = default;
 };
