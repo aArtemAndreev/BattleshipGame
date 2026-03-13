@@ -1,37 +1,29 @@
 #include "ShooterBot.h"
 #include <random>
 #include <iostream>
-#include <algorithm>
 #include <QPainter>
 
 ShooterBot::ShooterBot(Field f, std::shared_ptr<bool> whoseStep, QWidget *parent) 
-    : QWidget(parent), field(f), whoseStep(whoseStep) 
-{
+    : QWidget(parent), field(f), whoseStep(whoseStep) {
     targetMode = false;
     lastHitX = -1;
     lastHitY = -1;
     currentDirection = 0;
     
-    for (int y = 0; y < 12; ++y)
-    {
-        for (int x = 0; x < 12; ++x)
-        {
+    for (int y = 0; y < 12; ++y) {
+        for (int x = 0; x < 12; ++x) {
             enemyShots[y][x] = '0';
         }
     }
 }
 
-ShooterBot::ShooterBot()
-    : targetMode(false)
-{
+ShooterBot::ShooterBot() : targetMode(false) {
     lastHitX = -1;
     lastHitY = -1;
     currentDirection = 0;
     
-    for (int y = 0; y < 12; ++y)
-    {
-        for (int x = 0; x < 12; ++x)
-        {
+    for (int y = 0; y < 12; ++y) {
+        for (int x = 0; x < 12; ++x) {
             enemyShots[y][x] = '0';
         }
     }
@@ -85,43 +77,35 @@ void ShooterBot::paintEvent(QPaintEvent *event) {
     }
 }
 
-bool ShooterBot::isInside(int x, int y) const
-{
+bool ShooterBot::isInside(int x, int y) const {
     return x >= 1 && x <= 10 && y >= 1 && y <= 10;
 }
 
-void ShooterBot::addTarget(int x, int y)
-{
-    if (!isInside(x, y))
-    {
+void ShooterBot::addTarget(int x, int y) {
+    if (!isInside(x, y)) {
         return;
     }
 
-    if (enemyShots[y][x] != '0')
-    {
+    if (enemyShots[y][x] != '0') {
         return;
     }
 
     std::pair<int, int> target = {x, y};
 
-    if (std::find(targetQueue.begin(), targetQueue.end(), target) == targetQueue.end())
-    {
+    if (std::find(targetQueue.begin(), targetQueue.end(), target) == targetQueue.end()) {
         targetQueue.push_back(target);
     }
 }
 
-void ShooterBot::addNeighbors(int x, int y)
-{
+void ShooterBot::addNeighbors(int x, int y) {
     addTarget(x + 1, y);
     addTarget(x - 1, y);
     addTarget(x, y + 1);
     addTarget(x, y - 1);
 }
 
-void ShooterBot::rekillTargetsByDirection()
-{
-    if (currentHits.size() < 2)
-    {
+void ShooterBot::rekillTargetsByDirection() {
+    if (currentHits.size() < 2) {
         return;
     }
 
@@ -133,42 +117,34 @@ void ShooterBot::rekillTargetsByDirection()
     int firstX = currentHits[0].first;
     int firstY = currentHits[0].second;
 
-    for (const auto& hit : currentHits)
-    {
-        if (hit.first != firstX)
-        {
+    for (const auto& hit : currentHits) {
+        if (hit.first != firstX) {
             sameX = false;
         }
 
-        if (hit.second != firstY)
-        {
+        if (hit.second != firstY) {
             sameY = false;
         }
     }
 
-    if (sameY)
-    {
+    if (sameY) {
         int y = firstY;
         int minX = currentHits[0].first;
         int maxX = currentHits[0].first;
 
-        for (const auto& hit : currentHits)
-        {
+        for (const auto& hit : currentHits) {
             minX = std::min(minX, hit.first);
             maxX = std::max(maxX, hit.first);
         }
 
         addTarget(minX - 1, y);
         addTarget(maxX + 1, y);
-    }
-    else if (sameX)
-    {
+    } else if (sameX) {
         int x = firstX;
         int minY = currentHits[0].second;
         int maxY = currentHits[0].second;
 
-        for (const auto& hit : currentHits)
-        {
+        for (const auto& hit : currentHits) {
             minY = std::min(minY, hit.second);
             maxY = std::max(maxY, hit.second);
         }
@@ -178,8 +154,7 @@ void ShooterBot::rekillTargetsByDirection()
     }
 }
 
-void ShooterBot::clearCurrentTarget()
-{
+void ShooterBot::clearCurrentTarget() {
     targetQueue.clear();
     currentHits.clear();
     targetMode = false;
@@ -188,8 +163,7 @@ void ShooterBot::clearCurrentTarget()
     currentDirection = 0;
 }
 
-void ShooterBot::markAroundKilledShip()
-{
+void ShooterBot::markAroundKilledShip() {
     for (const auto& hit : currentHits)
     {
         int x = hit.first;
@@ -216,30 +190,25 @@ void ShooterBot::markAroundKilledShip()
     }
 }
 
-std::pair<int, int> ShooterBot::makeShot()
-{
+std::pair<int, int> ShooterBot::makeShot() {
     static std::random_device rd;
     static std::mt19937 gen(rd());
 
-    if (targetMode && !targetQueue.empty())
-    {
-        while (!targetQueue.empty())
-        {
+    if (targetMode && !targetQueue.empty()) {
+        while (!targetQueue.empty()) {
             std::pair<int, int> shot = targetQueue.front();
             targetQueue.erase(targetQueue.begin());
 
             int x = shot.first;
             int y = shot.second;
 
-            if (enemyShots[y][x] == '0')
-            {
+            if (enemyShots[y][x] == '0') {
                 return shot;
             }
         }
     }
     
-    if (lastHitX != -1 && lastHitY != -1 && currentDirection != 0)
-    {
+    if (lastHitX != -1 && lastHitY != -1 && currentDirection != 0) {
         int newX = lastHitX;
         int newY = lastHitY;
         
@@ -248,12 +217,9 @@ std::pair<int, int> ShooterBot::makeShot()
         else if (currentDirection == 3) newX = lastHitX - 1;
         else if (currentDirection == 4) newX = lastHitX + 1;
         
-        if (isInside(newX, newY) && enemyShots[newY][newX] == '0')
-        {
+        if (isInside(newX, newY) && enemyShots[newY][newX] == '0') {
             return {newX, newY};
-        }
-        else
-        {
+        } else {
             currentDirection = 0;
         }
     }
@@ -264,31 +230,25 @@ std::pair<int, int> ShooterBot::makeShot()
     int x;
     int y;
 
-    do
-    {
+    do {
         x = distX(gen);
         y = distY(gen);
-    }
-    while (enemyShots[y][x] != '0');
+    } while (enemyShots[y][x] != '0');
 
     return {x, y};
 }
 
-void ShooterBot::rememberShot(int x, int y, ShotResult result)
-{
-    if (result == Miss)
-    {
+void ShooterBot::rememberShot(int x, int y, ShotResult result) {
+    if (result == Miss) {
         enemyShots[y][x] = '*';
         
-        if (targetMode)
-        {
+        if (targetMode) {
             currentDirection = 0;
         }
         return;
     }
 
-    if (result == Hit)
-    {
+    if (result == Hit) {
         enemyShots[y][x] = 'X';
         currentHits.push_back({x, y});
         targetMode = true;
@@ -296,38 +256,31 @@ void ShooterBot::rememberShot(int x, int y, ShotResult result)
         lastHitX = x;
         lastHitY = y;
 
-        if (currentHits.size() == 1)
-        {
+        if (currentHits.size() == 1) {
             addNeighbors(x, y);
             currentDirection = 0;
         }
-        else if (currentHits.size() == 2)
-        {
+        else if (currentHits.size() == 2) {
             int firstX = currentHits[0].first;
             int firstY = currentHits[0].second;
             
-            if (firstX == x)
-            {
+            if (firstX == x) {
                 currentDirection = (y > firstY) ? 2 : 1;
             }
-            else if (firstY == y)
-            {
+            else if (firstY == y) {
                 currentDirection = (x > firstX) ? 4 : 3;
             }
             
             targetQueue.clear();
             rekillTargetsByDirection();
-        }
-        else
-        {
+        } else {
             rekillTargetsByDirection();
         }
 
         return;
     }
 
-    if (result == Kill)
-    {
+    if (result == Kill) {
         enemyShots[y][x] = 'X';
         currentHits.push_back({x, y});
 
@@ -338,8 +291,7 @@ void ShooterBot::rememberShot(int x, int y, ShotResult result)
     }
 }
 
-void ShooterBot::printMemory() const
-{
+void ShooterBot::printMemory() const {
     for (int y = 1; y <= 10; ++y)
     {
         for (int x = 1; x <= 10; ++x)
