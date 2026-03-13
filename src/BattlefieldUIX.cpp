@@ -34,7 +34,6 @@ void BattlefieldUIX::paintEvent(QPaintEvent *event) {
     
     painter.fillRect(0, 0, 500, 500, QBrush("#2980b9"));
     
-    painter.setPen(QPen(Qt::black, 2));
     for (int i = 1; i <= 10; ++i) {
         painter.drawLine(50 * i, 0, 50 * i, 500);
         painter.drawLine(0, 50 * i, 500, 50 * i);
@@ -43,8 +42,8 @@ void BattlefieldUIX::paintEvent(QPaintEvent *event) {
     if (!isBot) {
         for (int i = 1; i <= 10; ++i) {
             for (int j = 1; j <= 10; ++j) {
-                int x = 50 * (j-1);
-                int y = 50 * (i-1);
+                int x = 50 * (j - 1);
+                int y = 50 * (i - 1);
                 
                 if (field.getCurrentPlace(i, j) == '.') {
                     if (field.isShipSunk(i, j)) {
