@@ -87,7 +87,6 @@ void GameWindow::rotateShips() {
 }
 
 void GameWindow::resetPlacement() {
-    qDebug() << "🔄 Сброс расстановки";
     field = Field();
     for (ShipItem* ship : ships) {
         int originalCount;
@@ -113,8 +112,6 @@ void GameWindow::resetPlacement() {
     infoLabel->setText("Выберите корабль");
 
     mapWidget->update();
-
-    qDebug() << "✅ Сброс завершён";
 }
 
 void GameWindow::onShipSelected(ShipItem* ship) {
@@ -127,9 +124,6 @@ void GameWindow::onShipSelected(ShipItem* ship) {
 }
 
 void GameWindow::onCellClicked(int x, int y) {
-    qDebug() << "=== onCellClicked ===";
-    qDebug() << "x от мыши:" << x << "y от мыши:" << y;
-    qDebug() << "x для поля:" << x + 1 << "y для поля:" << y + 1;
 
     if (!selectedShip) {
         infoLabel->setText("Эуу корабль выбери да");
@@ -142,46 +136,26 @@ void GameWindow::onCellClicked(int x, int y) {
     }
 
     Ship templateShip = selectedShip->getShipTemplate();
-    qDebug() << "Размер корабля:" << templateShip.getSize();
-    qDebug() << "Ориентация:" << (templateShip.getRotation() == 0 ? "гориз" : "верт");
 
     Ship shipToPlace(templateShip.getSize(), x + 1, y + 1, templateShip.getRotation());
-    qDebug() << "Пытаюсь поставить...";
     if (field.setShip(shipToPlace)) {
-        qDebug() << "УСПЕХ!";
-        qDebug() << "=== После успешной установки ===";
-        qDebug() << "Шаг 1: decrement()";
         selectedShip->decrement();
-        qDebug() << "Шаг 2: setSelected(false)";
         selectedShip->setSelected(false);
-        qDebug() << "Шаг 3: selectedShip = nullptr";
         selectedShip = nullptr;
-        qDebug() << "Шаг 4: mapWidget->update()";
-        qDebug() << "  Проверка mapWidget перед update:";
         if (!mapWidget) {
-            qDebug() << "  ❌ mapWidget = nullptr!";
             return;
         }
-        if (!mapWidget->isVisible()) {
-            qDebug() << "  ⚠️ mapWidget не видим";
-        }
-        qDebug() << "  после проверки mapWidget";
-        qDebug() << "  Вызываем update()";
         mapWidget->update();
-        qDebug() << "Шаг 5: infoLabel update";
         infoLabel->setText("Корабль поставлен");
         shipsPlaced++;
-        qDebug() << "shipsPlaced =" << shipsPlaced;
+
         if (shipsPlaced >= 10) {
-            qDebug() << "Шаг 6: активация кнопки";
             infoLabel->setText("Все корабли поставлены");
             if (startButton) {
                 startButton->setEnabled(true);
             }
         }
-        qDebug() << "=== Конец обработки ===";
     } else {
-        qDebug() << "НЕУДАЧА";
         infoLabel->setText("Низзя сюда");
     }
 }

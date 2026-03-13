@@ -57,29 +57,20 @@ bool Field::checkIfCouldBePut(Ship ship) {
 }
 
 bool Field::setShip(Ship ship) {
-    qDebug() << "Field::setShip получил:"
-             << "size=" << ship.getSize()
-             << "x=" << ship.getX()
-             << "y=" << ship.getY()
-             << "rot=" << ship.getRotation();
     if (ship.getX() < 1 || ship.getX() > 10 || 
         ship.getY() < 1 || ship.getY() > 10) {
-        qDebug() << "  ❌ Координаты вне поля!";
         return false;
     }
     if (!checkIfCouldBePut(ship)) {
-        qDebug() << "  ❌ checkIfCouldBePut вернул false";
         return false;
     }
     const int shipX = ship.getX();
     const int shipY = ship.getY();
     const int shipSize = ship.getSize();
 
-    qDebug() << "  Ставим корабль...";
     if (ship.getRotation() == 0) {
         for (int i = shipX; i < shipX + shipSize; ++i) {
             if (i < 1 || i > 10) {
-                qDebug() << "  ❌ i вне границ:" << i;
                 return false;
             }
             field[shipY][i] = '.';
@@ -87,20 +78,16 @@ bool Field::setShip(Ship ship) {
     } else {
         for (int i = shipY; i < shipY + shipSize; ++i) {
             if (i < 1 || i > 10) {
-                qDebug() << "  ❌ i вне границ:" << i;
                 return false;
             }
             field[i][shipX] = '.';
-            qDebug() << "    клетка [" << i << "," << shipX << "] = '.'";
         }
     }
-    qDebug() << "✅ setShip успешно завершён";
     return true;
 }
 
 char Field::getCurrentPlace(int y, int x) const {
     if (y < 0 || y > 11 || x < 0 || x > 11) {
-        qDebug() << "❌ КРИТИЧЕСКАЯ ОШИБКА: getCurrentPlace с индексами y=" << y << "x=" << x;
         return '0';
     }
     return field[y][x];
