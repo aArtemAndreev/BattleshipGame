@@ -26,6 +26,7 @@ class ShipItem : public QWidget {
         bool isHorizontal() const { return ship.getRotation() == 0; }
         bool canPlace() const { return remaining > 0; }
         Ship getShipTemplate() const;
+        void setRemaining(int count);
     private:
         GameWindow* gameWindow;
 };

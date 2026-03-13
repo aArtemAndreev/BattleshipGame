@@ -23,9 +23,11 @@ private:
     QLabel* infoLabel;
     int shipsPlaced;
     QPushButton* startButton;
+    QPushButton* resetButton;
 private slots:
     void goToBattlefield();
     void rotateShips();
+    void resetPlacement();
 };
 
 #endif

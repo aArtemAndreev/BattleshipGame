@@ -62,6 +62,12 @@ void ShipItem::decrement() {
     }
 }
 
+void ShipItem::setRemaining(int count) {
+    remaining = count;
+    isSelected = false;
+    update();
+}
+
 Ship ShipItem::getShipTemplate() const {
     qDebug() << "getShipTemplate: размер=" << ship.getSize() << "ориентация=" << ship.getRotation();
     return Ship(ship.getSize(), 0, 0, ship.getRotation());

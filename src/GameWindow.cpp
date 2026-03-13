@@ -25,6 +25,11 @@ GameWindow::GameWindow(QWidget *parent) : QWidget(parent), selectedShip(nullptr)
     connect(rotateButton, &QPushButton::clicked, this, &GameWindow::rotateShips);
     leftLayout->addWidget(rotateButton);
 
+    resetButton = new QPushButton("Сброс", this);
+    resetButton->setFixedSize(150, 30);
+    connect(resetButton, &QPushButton::clicked, this, &GameWindow::resetPlacement);
+    leftLayout->addWidget(resetButton);
+
     infoLabel = new QLabel("Выбери корабль", this);
     infoLabel->setWordWrap(true);
     infoLabel->setStyleSheet("color: #2c3e50; font-weight: bold;");
@@ -79,6 +84,37 @@ void GameWindow::rotateShips() {
         selectedShip = nullptr;
         infoLabel->setText("Выберите корабль");
     }
+}
+
+void GameWindow::resetPlacement() {
+    qDebug() << "🔄 Сброс расстановки";
+    field = Field();
+    for (ShipItem* ship : ships) {
+        int originalCount;
+        switch(ship->getSize()) {
+            case 4: originalCount = 1; break;
+            case 3: originalCount = 2; break;
+            case 2: originalCount = 3; break;
+            case 1: originalCount = 4; break;
+            default: originalCount = 0;
+        }
+        ship->setRemaining(originalCount);
+    }
+
+    if (selectedShip) {
+        selectedShip->setSelected(false);
+        selectedShip = nullptr;
+    }
+
+    startButton->setEnabled(false);
+
+    shipsPlaced = 0;
+
+    infoLabel->setText("Выберите корабль");
+
+    mapWidget->update();
+
+    qDebug() << "✅ Сброс завершён";
 }
 
 void GameWindow::onShipSelected(ShipItem* ship) {
