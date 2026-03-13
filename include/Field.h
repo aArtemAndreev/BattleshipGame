@@ -6,6 +6,7 @@
 class Field {
 private:
     char field[12][12];
+    char shipStates[12][12];
     bool checkIfCouldBePut(Ship ship);
 public:
     Field() noexcept;
@@ -14,9 +15,13 @@ public:
     void printField();
     bool setShip(Ship ship);
     char getCurrentPlace(int y, int x) const;
-    void setCurrentPlace(int y, int x, char c);
-
-
+    void setShipState(int y, int x, int state);
+    int getShipState(int y, int x) const;
+    bool isShipDamaged(int y, int x) const;
+    bool isShipSunk(int y, int x) const;
+    void markShipAsDamaged(int y, int x);
+    void markShipAsSunk(int y, int x);
+    
     ~Field() = default;
 };
 
