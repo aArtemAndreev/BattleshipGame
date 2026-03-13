@@ -161,21 +161,17 @@ void GameWindow::onCellClicked(int x, int y) {
 }
 
 void GameWindow::goToBattlefield() {
-    // временно
     auto a = PlacementShipsBot::randomGenerator();
     bool isok = false;
     while (!isok) {
         a = PlacementShipsBot::randomGenerator();
         if (a.has_value()) isok = true;
     }
-    auto b = PlacementShipsBot::randomGenerator();
-    isok = false;
-    while (!isok) {
-        b = PlacementShipsBot::randomGenerator();
-        if (b.has_value()) isok = true;
-    }
-    // временно
-    BattlefieldWindow* bw = new BattlefieldWindow(this, *a, *b);
+    Field botField = *a;
+
+    Field playerField = field;
+
+    BattlefieldWindow* bw = new BattlefieldWindow(nullptr, playerField, botField);
 
     bw->show();
     this->close();
