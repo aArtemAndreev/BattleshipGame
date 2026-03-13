@@ -14,6 +14,8 @@ public:
     void printField();
     bool setShip(Ship ship);
     char getCurrentPlace(int y, int x) const;
+    void setCurrentPlace(int y, int x, char c);
+
 
     ~Field() = default;
 };

@@ -71,3 +71,7 @@ bool Field::setShip(Ship ship) {
 char Field::getCurrentPlace(int y, int x) const {
     return field[y][x];
 }
+
+void Field::setCurrentPlace(int y, int x, char c) {
+    field[y][x] = c;
+}

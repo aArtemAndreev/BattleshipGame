@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <QPainter>
 
-ShooterBot::ShooterBot(Field f,  QWidget *parent) : QWidget(parent), field(f) {}
+ShooterBot::ShooterBot(Field f, std::shared_ptr<bool> whoseStep, QWidget *parent) : QWidget(parent), field(f), whoseStep(whoseStep) {}
 
 void ShooterBot::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
@@ -14,13 +14,39 @@ void ShooterBot::paintEvent(QPaintEvent *event) {
         painter.drawLine(0, 50 * i, 500, 50 * i);
     }
 
+    painter.setPen(QPen(Qt::blue, 3));
     for (int i = 1; i < 12; ++i) {
         for (int j = 1; j < 12; ++j) {
+            int x = 50 * (j - 1);
+            int y = 50 * (i - 1);
             if (field.getCurrentPlace(i, j) == '.') {
-                painter.fillRect(50 * (j - 1), 50 * (i - 1), 50, 50, QBrush{Qt::white});
+                painter.fillRect(x, y, 50, 50, QBrush{Qt::white});
+            } else if (field.getCurrentPlace(i, j) == '/') {
+                painter.fillRect(x, y, 50, 50, QBrush{Qt::white});
+                painter.drawLine(x, y, x + 50, y + 50);
+            } else if (field.getCurrentPlace(i, j) == 'E') {
+                painter.fillRect(x, y, 50, 50, QBrush{Qt::blue});
             }
         }
     }
+
+    if (*whoseStep) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> distX(1, 500);
+        std::uniform_int_distribution<> distY(1, 500);
+        int x = distX(gen);
+        int y = distY(gen);
+        x -= x % 50;
+        y -= y % 50;
+        if (field.getCurrentPlace(y / 50 + 1, x / 50 + 1) == '.') {
+            field.setCurrentPlace(y / 50 + 1, x / 50 + 1, '/');
+        } else if (field.getCurrentPlace(y / 50 + 1, x / 50 + 1) == '0') {
+            field.setCurrentPlace(y / 50 + 1, x / 50 + 1, 'E');
+        }
+        *whoseStep = false;
+    }
+    update();
 }
 
 ShooterBot::ShooterBot()

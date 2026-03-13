@@ -2,7 +2,7 @@
 #include <QPainter>
 #include <QMouseEvent>
 
-BattlefieldUIX::BattlefieldUIX(Field f, QWidget *parent) : QWidget(parent), field(f) {}
+BattlefieldUIX::BattlefieldUIX(Field f, std::shared_ptr<bool> whoseStep, QWidget *parent) : QWidget(parent), field(f), whoseStep(whoseStep) {}
 
 QVector<QPoint> m_points;
 
@@ -30,9 +30,10 @@ void BattlefieldUIX::paintEvent(QPaintEvent *event) {
 
 void BattlefieldUIX::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
-        m_points.append(event->pos());  // Store position
-        update();  // Triggers paintEvent
+        m_points.append(event->pos());
+        update();
     }
     QWidget::mousePressEvent(event);
+    *whoseStep = true;
 }
 
