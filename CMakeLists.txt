@@ -32,3 +32,26 @@ target_link_libraries(BattleshipGame
         Qt6::Gui
         Qt6::Widgets
 )
+
+include(FetchContent)
+FetchContent_Declare(
+        googletest
+        URL https://github.com/google/googletest/archive/refs/tags/v1.15.2.zip
+)
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
+add_executable(RunTests 
+    tests/FieldTest.cpp
+    tests/ShipTest.cpp
+    src/Ship.cpp
+    src/Field.cpp
+)
+
+target_link_libraries(RunTests
+    GTest::gtest_main
+    GTest::gmock
+)
+
+enable_testing()
+add_test(NAME AllTests COMMAND RunTests)
