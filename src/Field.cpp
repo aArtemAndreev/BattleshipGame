@@ -74,15 +74,16 @@ bool Field::checkIfCouldBePut(Ship ship) {
     const int shipY = ship.getY();
     const int shipSize = ship.getSize();
     if (ship.getRotation() == 0) {
-        if (shipX < 1 || shipX + shipSize > 10) return false;
-        for (int i = shipX - 1; i < shipX + shipSize + 1; ++i) {
+        if (shipX < 1 || shipX + shipSize - 1 > 10) return false;
+        for (int i = shipX - 1; i <= shipX + shipSize; ++i) {
+            if (i < 1 || i > 10) continue;
             if (field[shipY][i] == '.' || field[shipY - 1][i] == '.' || field[shipY + 1][i] == '.') {
                 return false;
             }
         }
     } else {
-        if (shipY < 1 || shipY + shipSize > 10) return false;
-        for (int i = shipY - 1; i < shipY + shipSize + 1; ++i) {
+        if (shipY < 1 || shipY + shipSize - 1 > 10) return false;
+        for (int i = shipY - 1; i <= shipY + shipSize; ++i) {
             if (field[i][shipX] == '.' || field[i][shipX - 1] == '.' || field[i][shipX + 1] == '.') {
                 return false;
             }
