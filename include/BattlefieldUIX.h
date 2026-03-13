@@ -6,8 +6,8 @@
 
 class BattlefieldUIX : public QWidget {
 public:
-    BattlefieldUIX(Field f, std::shared_ptr<bool> whoseStep, QWidget *parent = nullptr);
-    void markHit(int y, int x);      
+    BattlefieldUIX(Field f, std::shared_ptr<bool> whoseStep, QWidget *parent = nullptr);    void markHit(int y, int x);      
+    void markHit(int y, int x);    
     void markMiss(int y, int x);     
     void markDamaged(int y, int x);  
     void markSunk(int y, int x);
