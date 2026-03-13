@@ -14,4 +14,4 @@ private:
 
 
 
-#endif //BATTLESHIPGAME_BATTLEFIELD_H
+#endif
