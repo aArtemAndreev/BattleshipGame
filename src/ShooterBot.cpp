@@ -75,6 +75,11 @@ void ShooterBot::paintEvent(QPaintEvent *event) {
                 painter.setPen(Qt::white);
                 painter.drawEllipse(x + 15, y + 15, 20, 20);
                 painter.setPen(QPen(Qt::red, 4));
+            } else if (enemyShots[i][j] == '-') {
+                painter.setBrush(Qt::white);
+                painter.setPen(Qt::white);
+                painter.drawEllipse(x + 15, y + 15, 20, 20);
+                painter.setPen(QPen(Qt::red, 4));
             }
         }
     }

@@ -1,7 +1,6 @@
 #include "Battlefield.h"
 #include <QHBoxLayout>
 #include <QMessageBox>
-#include <QRandomGenerator>
 #include "BattlefieldUIX.h"
 #include "ShooterBot.h"
 #include <functional>
@@ -94,22 +93,42 @@ void BattlefieldWindow::onPlayerShot(int y, int x) {
         if (isShipFullyHit(botField, y, x)) {
             int startY = y, startX = x;
             
-            while (startY > 1 && botField.getCurrentPlace(startY-1, x) == '.') startY--;
-            while (startX > 1 && botField.getCurrentPlace(y, startX-1) == '.') startX--;
+            while (startY > 1 && botField.getCurrentPlace(startY - 1, x) == '.') startY--;
+            while (startX > 1 && botField.getCurrentPlace(y, startX - 1) == '.') startX--;
             
-            bool isHorizontal = (startX < 10 && botField.getCurrentPlace(startY, startX+1) == '.');
+            bool isHorizontal = (startX < 10 && botField.getCurrentPlace(startY, startX + 1) == '.');
             
             if (isHorizontal) {
+                botView->markMiss(startY + 1, startX - 1);
+                botView->markMiss(startY, startX - 1);
+                botView->markMiss(startY - 1, startX - 1);
                 for (int i = startX; i <= 10; i++) {
-                    if (botField.getCurrentPlace(startY, i) != '.') break;
+                    if (botField.getCurrentPlace(startY, i) != '.') {
+                        botView->markMiss(startY + 1, i);
+                        botView->markMiss(startY, i);
+                        botView->markMiss(startY - 1, i);
+                        break;
+                    }
                     botField.markShipAsSunk(startY, i);
                     botView->markSunk(startY, i);
+                    botView->markMiss(startY + 1, i);
+                    botView->markMiss(startY - 1, i);
                 }
             } else {
+                botView->markMiss(startY - 1, startX + 1);
+                botView->markMiss(startY - 1, startX);
+                botView->markMiss(startY - 1, startX - 1);
                 for (int i = startY; i <= 10; i++) {
-                    if (botField.getCurrentPlace(i, startX) != '.') break;
+                    if (botField.getCurrentPlace(i, startX) != '.') {
+                        botView->markMiss(i, startX + 1);
+                        botView->markMiss(i, startX);
+                        botView->markMiss(i, startX - 1);
+                        break;
+                    }
                     botField.markShipAsSunk(i, startX);
                     botView->markSunk(i, startX);
+                    botView->markMiss(i, startX + 1);
+                    botView->markMiss(i, startX - 1);
                 }
             }            
         }
@@ -150,7 +169,7 @@ void BattlefieldWindow::onBotShot() {
             while (startX > 1 && playerField.getCurrentPlace(y, startX-1) == '.') startX--;
             
             bool isHorizontal = (startX < 10 && playerField.getCurrentPlace(startY, startX+1) == '.');
-            
+
             if (isHorizontal) {
                 for (int i = startX; i <= 10; i++) {
                     if (playerField.getCurrentPlace(startY, i) != '.') break;
