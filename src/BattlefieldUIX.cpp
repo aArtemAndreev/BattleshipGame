@@ -2,46 +2,30 @@
 #include <QPainter>
 #include <QMouseEvent>
 
-BattlefieldUIX::BattlefieldUIX(Field f, std::shared_ptr<bool> whoseStep, QWidget *parent) 
-    : QWidget(parent),field(f),whoseStep(whoseStep),isBot(false),clickCallback(nullptr){}
+BattlefieldUIX::BattlefieldUIX(Field f, QWidget *parent, bool isBotField) 
+    : QWidget(parent), field(f), isBot(isBotField), clickCallback(nullptr) {}
 
 void BattlefieldUIX::setClickListener(std::function<void(int,int)> callback) {
     clickCallback = callback;
 }
 
 void BattlefieldUIX::markHit(int y, int x) {
-    Shot shot;
-    shot.y = y;
-    shot.x = x; 
-    shot.type = 1;  
-    shots.append(shot);
+    shots.append({y, x, 1}); 
     update();
 }
 
 void BattlefieldUIX::markMiss(int y, int x) {
-    Shot shot;
-    shot.y = y;
-    shot.x = x;
-    shot.type = 0;  
-    shots.append(shot);
+    shots.append({y, x, 0});  
     update();
 }
 
 void BattlefieldUIX::markDamaged(int y, int x) {
-    Shot shot;
-    shot.y = y;
-    shot.x = x;
-    shot.type = 2; 
-    shots.append(shot);
+    shots.append({y, x, 2});
     update();
 }
 
 void BattlefieldUIX::markSunk(int y, int x) {
-    Shot shot;
-    shot.y = y;
-    shot.x = x;
-    shot.type = 3;  
-    shots.append(shot);
+    shots.append({y, x, 3}); 
     update();
 }
 
@@ -85,7 +69,6 @@ void BattlefieldUIX::paintEvent(QPaintEvent *event) {
             painter.drawEllipse(x + 15, y + 15, 20, 20);
         }
         else if (shot.type == 1) {
-            
             painter.setPen(QPen(Qt::red, 4));
             painter.drawLine(x + 5, y + 5, x + 45, y + 45);
             painter.drawLine(x + 45, y + 5, x + 5, y + 45);
@@ -101,18 +84,10 @@ void BattlefieldUIX::paintEvent(QPaintEvent *event) {
             painter.drawLine(x + 45, y + 5, x + 5, y + 45);
         }
     }
-    
-    if (!isBot && whoseStep && !(*whoseStep)) {
-        painter.setPen(QPen(Qt::white, 12));
-        painter.setFont(QFont("Arial", 20, QFont::Bold));
-        painter.drawText(rect(), Qt::AlignCenter, "Бот думает...");
-    }
 }
 
 void BattlefieldUIX::mousePressEvent(QMouseEvent *event) {
     if (!isBot) return;
-    if (!whoseStep) return;
-    if (!(*whoseStep)) return;
     
     if (event->button() == Qt::LeftButton) {
         int x = event->pos().x() / 50 + 1;

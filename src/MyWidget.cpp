@@ -4,13 +4,13 @@
 #include "GameWindow.h"
 #include <QDebug>
 
-MyWidget::MyWidget(Field& f, GameWindow* gameWindow, QWidget *parent) : QWidget(parent), field(f), gameWindow(gameWindow), hoverCell(-1, -1) {
+MyWidget::MyWidget(Field& f, GameWindow* gameWindow, QWidget *parent) 
+    : QWidget(parent), field(f), gameWindow(gameWindow), hoverCell(-1, -1) {
     setFixedSize(500, 500);
     setMouseTracking(true);
 }
 
 void MyWidget::paintEvent(QPaintEvent *event) {
-
     QPainter painter(this);
     painter.fillRect(0, 0, 500, 500, QBrush{"#2980b9"});
     for (int i = 1; i <= 9; ++i) {
@@ -50,9 +50,7 @@ void MyWidget::mouseMoveEvent(QMouseEvent *event) {
 void MyWidget::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
         QPoint cell = posToCell(event->pos());
-        if (cell.x() >= 0 && cell.x() < 10 && 
-            cell.y() >= 0 && cell.y() < 10) {
-            
+        if (cell.x() >= 0 && cell.x() < 10 && cell.y() >= 0 && cell.y() < 10) {
             gameWindow->onCellClicked(cell.x(), cell.y());
         }
     }

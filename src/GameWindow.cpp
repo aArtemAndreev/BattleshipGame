@@ -124,7 +124,6 @@ void GameWindow::onShipSelected(ShipItem* ship) {
 }
 
 void GameWindow::onCellClicked(int x, int y) {
-
     if (!selectedShip) {
         infoLabel->setText("Эуу корабль выбери да");
         return;
