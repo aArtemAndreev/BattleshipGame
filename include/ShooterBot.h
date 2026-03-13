@@ -29,10 +29,11 @@ private:
     void clearCurrentTarget();
     void markAroundKilledShip();
 
+    std::shared_ptr<bool> whoseStep;
 protected:
     void paintEvent(QPaintEvent *event) override;
 public:
-    ShooterBot(Field f, QWidget *parent = nullptr);
+    ShooterBot(Field f, std::shared_ptr<bool> whoseStep, QWidget *parent = nullptr);
     ShooterBot();
     std::pair<int,int> makeShot();
     void rememberShot(int x, int y, ShotResult result);

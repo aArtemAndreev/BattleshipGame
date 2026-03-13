@@ -11,19 +11,13 @@ BattlefieldWindow::BattlefieldWindow(QWidget* parent, Field playerField, Field b
 
     QHBoxLayout* layout = new QHBoxLayout(this);
 
-
-    ShooterBot* mapPlayerWidget = new ShooterBot(playerField, this);
+    std::shared_ptr<bool> whoseStep = std::make_shared<bool>(false);
+    ShooterBot* mapPlayerWidget = new ShooterBot(playerField, whoseStep, this);
     mapPlayerWidget->setFixedSize(500, 500);
 
-    BattlefieldUIX* mapBotWidget = new BattlefieldUIX(botField, this);
+    BattlefieldUIX* mapBotWidget = new BattlefieldUIX(botField, whoseStep, this);
     mapBotWidget->setFixedSize(500, 500);
 
     layout->addWidget(mapPlayerWidget);
     layout->addWidget(mapBotWidget);
-
-//    int playerPoints = 0;
-//    int botPoints = 0;
-//    while (playerPoints < 10 && botPoints < 10) {
-//
-//    }
 }
