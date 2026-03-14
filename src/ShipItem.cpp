@@ -20,7 +20,7 @@ void ShipItem::paintEvent(QPaintEvent *event) {
     painter.drawRect(rect().adjusted(0, 0, -1, -1));
 
     painter.setPen(Qt::black);
-    painter.drawText(5, 20, QString("%1-палубный: %2").arg(ship.getSize()).arg(remaining));
+    painter.drawText(5, 20, QString("%1-deck: %2").arg(ship.getSize()).arg(remaining));
 
     painter.setBrush(Qt::darkGray);
     int startX = 100;

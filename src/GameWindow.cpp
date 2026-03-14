@@ -9,7 +9,7 @@
 #include "PlacementShipsBot.h"
 
 GameWindow::GameWindow(QWidget *parent) : QWidget(parent), selectedShip(nullptr), currentOrientation(true), shipsPlaced(0) {
-    setWindowTitle("Морской бой");
+    setWindowTitle("Battleship");
     setFixedSize(800, 600);
     
     QHBoxLayout* layout = new QHBoxLayout(this);
@@ -20,17 +20,17 @@ GameWindow::GameWindow(QWidget *parent) : QWidget(parent), selectedShip(nullptr)
 
     QVBoxLayout* leftLayout = new QVBoxLayout(leftPanel);
 
-    QPushButton* rotateButton = new QPushButton("Повернуть", this);
+    QPushButton* rotateButton = new QPushButton("Rotate", this);
     rotateButton->setFixedSize(150, 30);
     connect(rotateButton, &QPushButton::clicked, this, &GameWindow::rotateShips);
     leftLayout->addWidget(rotateButton);
 
-    resetButton = new QPushButton("Сброс", this);
+    resetButton = new QPushButton("Clear", this);
     resetButton->setFixedSize(150, 30);
     connect(resetButton, &QPushButton::clicked, this, &GameWindow::resetPlacement);
     leftLayout->addWidget(resetButton);
 
-    infoLabel = new QLabel("Выбери корабль", this);
+    infoLabel = new QLabel("Choose ship", this);
     infoLabel->setWordWrap(true);
     infoLabel->setStyleSheet("color: #2c3e50; font-weight: bold;");
     leftLayout->addWidget(infoLabel);
@@ -53,7 +53,7 @@ GameWindow::GameWindow(QWidget *parent) : QWidget(parent), selectedShip(nullptr)
 
     leftLayout->addStretch();
     
-    startButton = new QPushButton("Начать игру", this);
+    startButton = new QPushButton("Start", this);
     startButton->setFixedSize(150, 50);
     startButton->setEnabled(false);
 
@@ -76,13 +76,13 @@ void GameWindow::rotateShips() {
     }
     QPushButton* btn = qobject_cast<QPushButton*>(sender());
     if (btn) {
-        btn->setText(currentOrientation ? "Гориз" : "Верт");
+        btn->setText(currentOrientation ? "Horizontal" : "Vertical");
     }
 
     if (selectedShip) {
         selectedShip->setSelected(false);
         selectedShip = nullptr;
-        infoLabel->setText("Выберите корабль");
+        infoLabel->setText("Choose ship");
     }
 }
 
@@ -109,7 +109,7 @@ void GameWindow::resetPlacement() {
 
     shipsPlaced = 0;
 
-    infoLabel->setText("Выберите корабль");
+    infoLabel->setText("Choose ship");
 
     mapWidget->update();
 }
@@ -120,17 +120,17 @@ void GameWindow::onShipSelected(ShipItem* ship) {
     }
 
     selectedShip = ship;
-    infoLabel->setText(QString("Выбран %1-палубный корабль").arg(ship->getSize()));
+    infoLabel->setText(QString("Selected %1-deck ship").arg(ship->getSize()));
 }
 
 void GameWindow::onCellClicked(int x, int y) {
     if (!selectedShip) {
-        infoLabel->setText("Эуу корабль выбери да");
+        infoLabel->setText("Ship is not selected");
         return;
     }
 
     if (!selectedShip->canPlace()) {
-        infoLabel->setText("Все корабль на поле");
+        infoLabel->setText("Placed all ships of this type");
         return;
     }
 
@@ -145,17 +145,17 @@ void GameWindow::onCellClicked(int x, int y) {
             return;
         }
         mapWidget->update();
-        infoLabel->setText("Корабль поставлен");
+        infoLabel->setText("Ship placed");
         shipsPlaced++;
 
         if (shipsPlaced >= 10) {
-            infoLabel->setText("Все корабли поставлены");
+            infoLabel->setText("All ships are placed");
             if (startButton) {
                 startButton->setEnabled(true);
             }
         }
     } else {
-        infoLabel->setText("Низзя сюда");
+        infoLabel->setText("Can't place here");
     }
 }
 
