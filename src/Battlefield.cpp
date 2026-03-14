@@ -43,7 +43,7 @@ bool isShipFullyHit(Field& field, int y, int x) {
 BattlefieldWindow::BattlefieldWindow(QWidget* parent, Field playerF, Field botF) 
     : QWidget(parent), playerField(playerF), botField(botF) {
     
-    setWindowTitle("Морской бой");
+    setWindowTitle("Battleship");
     setFixedSize(1200, 600);
     
     for (int i = 0; i < 12; i++) {
@@ -134,7 +134,7 @@ void BattlefieldWindow::onPlayerShot(int y, int x) {
         }
         
         if (playerHits == 20) {
-            QMessageBox::information(this, "ПОБЕДА!", "ТЫ ПОБЕДИЛ! 🎉");
+            QMessageBox::information(this, "VICTORY", "You won!");
             this->close();
             return;
         }
@@ -189,7 +189,7 @@ void BattlefieldWindow::onBotShot() {
         }
 
         if (botHits == 20) {
-            QMessageBox::information(this, "ПОРАЖЕНИЕ","Ты проиграл");
+            QMessageBox::information(this, "DEFEAT", "You lost!");
             this->close();
             return;
         }
