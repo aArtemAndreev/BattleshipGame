@@ -10,6 +10,8 @@ class GameWindow;
 class MyWidget : public QWidget {
 public:
     MyWidget(Field& f, GameWindow* gameWindow, QWidget *parent = nullptr);
+
+    ~MyWidget() override = default;
     
 protected:
     void paintEvent(QPaintEvent *event) override;

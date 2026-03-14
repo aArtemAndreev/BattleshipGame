@@ -27,6 +27,8 @@ class ShipItem : public QWidget {
         bool canPlace() const { return remaining > 0; }
         Ship getShipTemplate() const;
         void setRemaining(int count);
+
+        ~ShipItem() override = default;
     private:
         GameWindow* gameWindow;
 };
