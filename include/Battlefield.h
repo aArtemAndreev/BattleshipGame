@@ -8,6 +8,8 @@
 class BattlefieldWindow : public QWidget {
 public:
     BattlefieldWindow(QWidget* parent, Field playerField, Field botField);
+
+    ~BattlefieldWindow() override = default;
     
 private slots:
     void onPlayerShot(int y, int x);

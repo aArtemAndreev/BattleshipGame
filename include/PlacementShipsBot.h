@@ -5,10 +5,12 @@
 #include <array>
 #include "Field.h"
 
-class  PlacementShipsBot {
+class PlacementShipsBot {
 public:
-     PlacementShipsBot() = default;
+    PlacementShipsBot() = default;
     static std::optional<Field> randomGenerator();
+
+    ~PlacementShipsBot() = default;
 };
 
 #endif

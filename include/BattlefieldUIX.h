@@ -16,7 +16,8 @@ public:
     void markSunk(int y, int x);     
     
     void setClickListener(std::function<void(int,int)> callback);
-    
+
+    ~BattlefieldUIX() override = default;
 protected:
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;

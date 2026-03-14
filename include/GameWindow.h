@@ -11,10 +11,11 @@
 class GameWindow : public QWidget {  
 public:
     GameWindow(QWidget *parent = nullptr);
-    ~GameWindow() = default;
 
     void onShipSelected(ShipItem* ship);
     void onCellClicked(int x, int y);
+
+    ~GameWindow() override = default;
 
 private:
     Field field;

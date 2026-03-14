@@ -43,6 +43,8 @@ public:
     std::pair<int,int> makeShot();
     void rememberShot(int x, int y, ShotResult result);
     void printMemory() const;
+
+    ~ShooterBot() override = default;
 };
 
 #endif
