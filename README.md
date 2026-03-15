@@ -5,13 +5,13 @@
 
 ### Getting started
 
-#### To run this app, you need in any IDE with C++23, but also you need to install QT, or it will not work: https://doc.qt.io/qt-6/get-and-install-qt.html
+#### To run this app, you need any IDE with C++23, but you also need to install QT, or it will not work: https://doc.qt.io/qt-6/get-and-install-qt.html
 #### Then you can download or clone repository and run `main.cpp`.
 #### Otherwise, you can download app for macOS or Windows: https://drive.google.com/drive/folders/1xGiJ1LggVWGzZ9f612q9ugcR7Pi0ruU9?usp=sharing
 #### Running on macOS:
 1. Install `BattleshipGame.dmg` and put into `Applications`
 2. Open the terminal and paste `xattr -cr /Applications/BattleshipGame.app`
-3. Then paste codesign `--force --deep --sign - /Applications/BattleshipGame.app`
+3. Then paste `codesign --force --deep --sign - /Applications/BattleshipGame.app`
 4. Play it! (We guarantee that your data will not be stolen)
 
 #### Instruction for running on Windows will be soon!
