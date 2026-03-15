@@ -14,7 +14,7 @@ find_package(Qt6 COMPONENTS
         Widgets
         REQUIRED)
 
-add_executable(BattleshipGame
+add_executable(BattleshipGame MACOSX_BUNDLE
     main.cpp
     src/MyWidget.cpp
     src/Field.cpp
